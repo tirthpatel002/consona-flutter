@@ -25,7 +25,7 @@ dependencies:
   camera: ^0.11.0+2
   permission_handler: ^11.3.1
   path: ^1.9.0
-  ffmpeg_kit_flutter_new_min_gpl: ^2.6.1
+  ffmpeg_kit_flutter_new_min: ^3.6.7
 
 dev_dependencies:
   flutter_test:

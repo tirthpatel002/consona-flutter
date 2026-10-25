@@ -6,7 +6,7 @@ import FlutterMacOS
 import Foundation
 
 import audioplayers_darwin
-import ffmpeg_kit_flutter_new_min_gpl
+import ffmpeg_kit_flutter_new_min
 import record_macos
 import shared_preferences_foundation
 import video_player_avfoundation

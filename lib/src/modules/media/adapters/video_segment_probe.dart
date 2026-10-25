@@ -1,7 +1,7 @@
 /// FFprobe helpers for segment orientation (ffmpeg_kit only here).
 library;
 
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_new_min/ffprobe_kit.dart';
 
 import '../camera/camera_runtime.dart';
 

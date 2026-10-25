@@ -3,8 +3,8 @@ library;
 
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new_min_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new_min/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new_min/return_code.dart';
 import 'package:path/path.dart' as p;
 
 import '../camera/video_segment_merge.dart';
@@ -78,18 +78,25 @@ class ConsonaFfmpegVideoSegmentMerger implements ConsonaVideoSegmentMerger {
     // Mixed lenses or copy failed: re-encode to a common portrait canvas.
     // FFmpeg autorotate (the default) reads each clip's rotation metadata
     // and decodes frames already upright — no manual transpose needed.
-    final reencodeCmd = buildPortraitMergeCommand(
-      orderedSegments: existingSegments,
-      outputPath: out,
-    );
-    final session = await FFmpegKit.execute(reencodeCmd);
-    final code = await session.getReturnCode();
-
-    if (ReturnCode.isSuccess(code) && File(out).existsSync()) {
-      return ConsonaVideoMergeOutcome(
-        playbackPath: out,
-        segmentPaths: List<String>.from(orderedPaths),
+    // Uses LGPL-safe encoders only (platform hardware H.264, then mpeg4).
+    for (final encoder in platformVideoEncoders()) {
+      try {
+        if (File(out).existsSync()) await File(out).delete();
+      } catch (_) {}
+      final reencodeCmd = buildPortraitMergeCommand(
+        orderedSegments: existingSegments,
+        outputPath: out,
+        videoEncoder: encoder,
       );
+      final session = await FFmpegKit.execute(reencodeCmd);
+      final code = await session.getReturnCode();
+
+      if (ReturnCode.isSuccess(code) && File(out).existsSync()) {
+        return ConsonaVideoMergeOutcome(
+          playbackPath: out,
+          segmentPaths: List<String>.from(orderedPaths),
+        );
+      }
     }
 
     // Full failure — hand the longest raw segment back unchanged.

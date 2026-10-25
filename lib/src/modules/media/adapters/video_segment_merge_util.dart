@@ -65,6 +65,7 @@ String buildPortraitMergeCommand({
   required String outputPath,
   int targetWidth = 720,
   int targetHeight = 1280,
+  String videoEncoder = 'mpeg4',
 }) {
   assert(orderedSegments.length >= 2);
 
@@ -96,7 +97,25 @@ String buildPortraitMergeCommand({
   return '-y $inputs '
       '-filter_complex "${filters.toString()}" '
       '-map "[outv]" -map "[outa]" '
-      '-c:v libx264 -preset ultrafast -crf 26 -threads 0 '
+      '${videoEncoderArgs(videoEncoder)} -threads 0 '
       '-c:a aac -b:a 96k -movflags +faststart '
       "'$out'";
 }
+
+/// LGPL-safe H.264/MPEG-4 encoders to try, best first, for the current
+/// platform. Hardware encoders ship with the OS (no GPL code such as x264);
+/// `mpeg4` is FFmpeg's built-in LGPL encoder and always works as a fallback.
+List<String> platformVideoEncoders() {
+  if (Platform.isIOS || Platform.isMacOS) return const ['h264_videotoolbox', 'mpeg4'];
+  if (Platform.isAndroid) return const ['h264_mediacodec', 'mpeg4'];
+  if (Platform.isWindows) return const ['h264_mf', 'mpeg4'];
+  return const ['mpeg4'];
+}
+
+/// FFmpeg video codec arguments for [encoder].
+String videoEncoderArgs(String encoder) => switch (encoder) {
+      'h264_videotoolbox' => '-c:v h264_videotoolbox -b:v 2500k -allow_sw 1',
+      'h264_mediacodec' => '-c:v h264_mediacodec -b:v 2500k',
+      'h264_mf' => '-c:v h264_mf -b:v 2500k',
+      _ => '-c:v mpeg4 -q:v 5',
+    };
