@@ -1,0 +1,13 @@
+build/
+.dart_tool/
+example/build/
+example/.dart_tool/
+example/ios/Pods/
+example/macos/Pods/
+example/**/ephemeral/
+.idea/
+*.iml
+.DS_Store
+*.log
+.env
+.env.*

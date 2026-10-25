@@ -1455,13 +1455,12 @@ class _ChromeIconButton extends StatelessWidget {
     required this.icon,
     required this.onTap,
     this.tooltip,
-    this.dimmed = false,
   });
 
   final IconData icon;
   final VoidCallback onTap;
   final String? tooltip;
-  final bool dimmed;
+  static const bool dimmed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1537,14 +1536,13 @@ class _IconCircleButton extends StatelessWidget {
     this.onTap,
     this.filled = false,
     this.emphasize = false,
-    this.size = _CaptureChrome.actionSize,
   });
 
   final IconData icon;
   final VoidCallback? onTap;
   final bool filled;
   final bool emphasize;
-  final double size;
+  static const double size = _CaptureChrome.actionSize;
 
   @override
   Widget build(BuildContext context) {
